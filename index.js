@@ -1,26 +1,37 @@
 import express from "express";
-import dotenv from "dotenv";
-import  dbConnection from "./src/Db/db.connection.js";
-import { userModel } from "./src/Db/Models/user.model.js";
+import { config } from "./src/Config/config.js";
+import { connectDB } from "./src/Db/db.connection.js";
 import authRouter from "./src/Auth/auth.controller.js";
+import userRouter from "./src/users/user.controller.js";
+import {
+    notFoundHandler,
+    globalErrorHandler
+} from "./src/middleware/global-error-handler.middleware.js";
 
-
-dotenv.config();
 
 const app = express();
 
 app.use(express.json());
-app.use("/auth", authRouter);
-
-dbConnection();
-
 
 app.get("/", (req, res) => {
-    res.send("Hello NoSQL");
+    res.status(200).json({
+        message: "Sarahah API is running"
+    });
 });
 
-const PORT = 3000;
+app.use("/auth", authRouter);
+app.use("/users", userRouter);
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
+
+try {
+    await connectDB();
+
+    app.listen(config.port, () => {
+        console.log(`Server running on port ${config.port}`);
+    });
+} catch (error) {
+    console.error("Failed to start application:", error.message);
+    process.exit(1);
+}

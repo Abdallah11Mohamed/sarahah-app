@@ -1,24 +1,10 @@
 import { Router } from "express";
-import * as authService from "./auth.service.js";
+import { messageServiceStatus } from "./message.service.js";
 
-const authController = Router();
+const router = Router();
 
-authController.post("/register", async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
-
-    const result = await authService.signUp({
-        firstName,
-        lastName,
-        email,
-        password
-    });
-
-    res
-        .status(201)
-        .json({
-            message: "User registered successfully",
-            user: result
-        });
+router.get("/health", (req, res) => {
+    res.status(200).json(messageServiceStatus());
 });
 
-export default authController;
+export default router;

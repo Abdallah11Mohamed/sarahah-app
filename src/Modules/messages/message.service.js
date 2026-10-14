@@ -1,20 +1,5 @@
-import userModel from "../../DB/Models/user.model.js";
-
-export const signUp = async (body) => {
-    const { firstName, lastName, email, password } = body;
-
-    const isEmailExists = await userModel.findOne({ email });
-
-    console.log({ isEmailExists });
-
-    if (isEmailExists) {
-        throw new Error("Email already exists");
-    }
-
-    return userModel.insertOne({
-        firstName,
-        lastName,
-        email,
-        password
-    });
-};
+// Message endpoints are not currently connected to a Message model.
+// Add message CRUD here when the Message schema and assignment requirements are available.
+export const messageServiceStatus = () => ({
+    message: "Message service is not implemented yet"
+});
